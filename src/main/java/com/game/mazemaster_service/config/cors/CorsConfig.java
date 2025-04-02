@@ -1,4 +1,4 @@
-package com.game.mazemaster_service.cors;
+package com.game.mazemaster_service.config.cors;
 
 
 import org.springframework.context.annotation.Bean;

@@ -17,3 +17,11 @@ spring:
     user:
       name: admin
       password: admin
+
+jwt:
+  rsa-private-key: classpath:certs/privateKey.pem
+  rsa-public-key: classpath:certs/publicKey.pem
+
+logging:
+  level:
+    org.springframework.security: trace
