@@ -1,4 +1,4 @@
-package com.nepal.collegehub.response;
+package com.game.mazemaster_service.global.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

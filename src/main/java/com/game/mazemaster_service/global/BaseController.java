@@ -1,32 +1,63 @@
 package com.game.mazemaster_service.global;
 
-import com.game.mazemaster_service.global.dto.ErrorResponse;
-import com.game.mazemaster_service.global.dto.SuccessResponse;
+import com.game.mazemaster_service.global.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
-
 public class BaseController {
-    public ResponseEntity<SuccessResponse> successResponse(Object data) {
-        SuccessResponse response = new SuccessResponse(LocalDateTime.now(), "success",
-                data, HttpStatus.OK.name());
-        return ResponseEntity.ok(response);
+    // Success response with data
+    protected <T> ResponseEntity<ApiResponse<T>> successResponse(T data, String message, HttpStatus status) {
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setStatus(true);
+        response.setStatusCode(status.value());
+        response.setMessage(message);
+        response.setData(data);
+        return new ResponseEntity<>(response, status);
     }
 
-    public ResponseEntity<SuccessResponse> successResponse(Object data, String message){
-        SuccessResponse response = new SuccessResponse(
-                LocalDateTime.now(),
-                message,
-                data,
-                HttpStatus.OK.name()
-        );
-        return ResponseEntity.ok(response);
-    }
-    public ResponseEntity<ErrorResponse> errorResponse(HttpStatus status, String message, Exception exception) {
-        ErrorResponse response = new ErrorResponse(LocalDateTime.now(), message, exception.getMessage(), status.name());
+    protected <T> ResponseEntity<ApiResponse<T>> successResponse(T data, String message) {
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setStatus(true);
         response.setMessage(message);
-        response.setError(exception.getMessage());
-        return ResponseEntity.status(status).body(response);
+        response.setData(data);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Success response without data
+    protected ResponseEntity<ApiResponse<Void>> successResponse(String message) {
+        ApiResponse<Void> response = new ApiResponse<>();
+        response.setStatus(true);
+        response.setMessage(message);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Error response
+    protected ResponseEntity<ApiResponse<Void>> errorResponse(String message, String errorCode, String errorDetails, HttpStatus status) {
+        ApiResponse<Void> response = new ApiResponse<>();
+        response.setStatus(false);
+        response.setMessage(message);
+        response.setStatusCode(status.value());
+
+        ApiResponse.ErrorDetails error = new ApiResponse.ErrorDetails();
+        error.setCode(errorCode);
+        error.setDetails(errorDetails);
+        response.setError(error);
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    // Error response with data
+    protected <T> ResponseEntity<ApiResponse<T>> errorResponse(String message, String errorCode, String errorDetails, T data, HttpStatus status) {
+        ApiResponse<T> response = new ApiResponse<>();
+        response.setStatus(false);
+        response.setMessage(message);
+        response.setData(data);
+
+        ApiResponse.ErrorDetails error = new ApiResponse.ErrorDetails();
+        error.setCode(errorCode);
+        error.setDetails(errorDetails);
+        response.setError(error);
+
+        return new ResponseEntity<>(response, status);
     }
 }

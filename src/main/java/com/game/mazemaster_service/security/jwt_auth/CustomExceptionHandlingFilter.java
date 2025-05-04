@@ -1,18 +1,19 @@
-package com.nepal.collegehub.security.jwt_auth;
+package com.game.mazemaster_service.security.jwt_auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nepal.collegehub.response.ApiResponse;
+import com.game.mazemaster_service.global.dto.ApiResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class CustomExceptionHandlingFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws IOException {
         try {
             filterChain.doFilter(request, response);

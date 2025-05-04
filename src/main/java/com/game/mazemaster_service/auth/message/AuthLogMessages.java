@@ -1,11 +1,4 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:3/6/2025
- * Time:12:32 PM
- */
-
-package com.nepal.collegehub.auth.messages;
+package com.game.mazemaster_service.auth.message;
 
 public class AuthLogMessages {
     private AuthLogMessages() {}

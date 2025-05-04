@@ -1,14 +1,6 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:2/24/2025
- * Time:4:19 PM
- */
+package com.game.mazemaster_service.mail;
 
-package com.nepal.collegehub.mail;
-
-import com.nepal.collegehub.otp.entity.OTP;
-import com.nepal.collegehub.user.entity.UserEntity;
+import com.game.mazemaster_service.user.entity.UserInfoEntity;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -30,25 +22,6 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
-
-    @Override
-    @Async
-    public void sendCollegeApprovalMail(String email, String collegeName, String fullName, String password) {
-        Context context = new Context();
-        context.setVariable("fullName", fullName);
-        context.setVariable("collegeName", collegeName);
-        context.setVariable("email", email);
-        context.setVariable("password", password);
-
-        // Process the Thymeleaf template
-        String emailContent = templateEngine.process("college-approval-email", context);
-
-        // Send the email using the sendEmail method
-        sendEmail(email, "Congratulations! " + collegeName + " is Approved on CollegeHub", emailContent);
-
-        log.info("College approval email sent successfully to: {}", email);
-    }
-
     @Async
     @Override
     public void sendOtpEmail(String to, String name, String otp, LocalDateTime expiry) {
@@ -65,21 +38,7 @@ public class MailServiceImpl implements MailService {
 
     @Async
     @Override
-    public void sendUserAddedToCollegeMail(String fullName, String schoolName, String email, String password, String loginUrl) {
-        Context context = new Context();
-        context.setVariable("fullName", fullName);
-        context.setVariable("schoolName", schoolName);
-        context.setVariable("email", email);
-        context.setVariable("password", password);
-        context.setVariable("loginLink", loginUrl);
-
-        String content = templateEngine.process("user-added-to-college.html", context);
-        sendEmail(email, "You have been added to " + schoolName, content);
-    }
-
-    @Async
-    @Override
-    public void sendForgotPasswordMail(UserEntity userEntity, String forgotPasswordUrl, LocalDateTime expiry) {
+    public void sendForgotPasswordMail(UserInfoEntity userEntity, String forgotPasswordUrl, LocalDateTime expiry) {
         String email = userEntity.getEmailId();
         String name = userEntity.getFullName();
 
@@ -100,7 +59,7 @@ public class MailServiceImpl implements MailService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setFrom("no-reply@collegehub.com");
+            helper.setFrom("no-reply@mazemaster.com");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(content, true);

@@ -1,11 +1,4 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:2/24/2025
- * Time:4:11 PM
- */
-
-package com.nepal.collegehub.config.mail;
+package com.game.mazemaster_service.config.mail;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

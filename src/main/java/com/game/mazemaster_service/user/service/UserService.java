@@ -1,16 +1,10 @@
-package com.nepal.collegehub.user.service;
+package com.game.mazemaster_service.user.service;
 
-import com.nepal.collegehub.user.dto.request.ChangePasswordRequest;
-import com.nepal.collegehub.user.dto.request.UserRegistrationRequest;
-import com.nepal.collegehub.user.dto.request.UserUpdateRequest;
-import com.nepal.collegehub.user.dto.response.UserRegistrationResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.game.mazemaster_service.user.dto.ChangePasswordRequest;
+import com.game.mazemaster_service.user.dto.UserRegistrationResponse;
+import com.game.mazemaster_service.user.dto.UserUpdateRequest;
 
 public interface UserService {
-    UserRegistrationResponse registerSchoolUser(UserRegistrationRequest userRegistrationRequest);
-
-    Page<UserRegistrationResponse> getAllSchoolUsers(Pageable pageable);
 
     UserRegistrationResponse getUserById(Long id);
 

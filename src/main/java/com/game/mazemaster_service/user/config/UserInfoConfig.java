@@ -14,11 +14,8 @@ public class UserInfoConfig implements UserDetails {
     private final UserInfoEntity userInfoEntity;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays
-                .stream(userInfoEntity
-                        .getRoles()
-                        .split(","))
-                .map(SimpleGrantedAuthority::new)
+        return userInfoEntity.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .toList();
     }
 

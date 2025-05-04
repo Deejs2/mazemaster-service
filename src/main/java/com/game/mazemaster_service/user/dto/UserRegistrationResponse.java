@@ -1,7 +1,8 @@
-package com.game.mazemaster_service.user.dto.response;
+package com.game.mazemaster_service.user.dto;
 
 
-import com.nepal.collegehub.user.entity.UserEntity;
+import com.game.mazemaster_service.user.entity.UserInfoEntity;
+import com.game.mazemaster_service.user.role.dto.RolesResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class UserRegistrationResponse {
     String userEmail;
     RolesResponse userRole;
 
-    public UserRegistrationResponse(UserEntity user) {
+    public UserRegistrationResponse(UserInfoEntity user) {
         this.id = user.getId();
         this.fullName = user.getFullName();
         this.userEmail = user.getEmailId();

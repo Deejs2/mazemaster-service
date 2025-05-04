@@ -1,11 +1,4 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:2/24/2025
- * Time:4:56 PM
- */
-
-package com.nepal.collegehub.utils.otp;
+package com.game.mazemaster_service.otp.utils;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -13,11 +13,6 @@ spring:
       hibernate:
         format_sql: true
 
-  security:
-    user:
-      name: admin
-      password: admin
-
 jwt:
   rsa-private-key: classpath:certs/privateKey.pem
   rsa-public-key: classpath:certs/publicKey.pem
@@ -25,3 +20,20 @@ jwt:
 logging:
   level:
     org.springframework.security: trace
+
+frontend:
+  domain: http://localhost:4200
+  forgot_password: /auth/reset-password
+  login: /login
+
+otp:
+  length: 6         # Length of OTP
+  alphanumeric: false # true for alphanumeric, false for numeric
+  expiryInSeconds: 300 # OTP expiry time in seconds (5 minutes)
+
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+    enabled: true
+  swagger-ui:
+    path: /v1/swagger.html

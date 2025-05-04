@@ -1,11 +1,4 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:3/4/2025
- * Time:4:37 PM
- */
-
-package com.nepal.collegehub.utils.validator;
+package com.game.mazemaster_service.global.validator;
 
 import java.util.regex.Pattern;
 

@@ -1,24 +1,21 @@
-package com.nepal.collegehub.utils.logged_in_user;
+package com.game.mazemaster_service.global.logged_in_user;
 
-import com.nepal.collegehub.college.college.entity.College;
-import com.nepal.collegehub.college.college.repository.CollegeRepository;
-import com.nepal.collegehub.user.entity.UserEntity;
-import com.nepal.collegehub.user.repository.UserInfoRepository;
+import com.game.mazemaster_service.user.entity.UserInfoEntity;
+import com.game.mazemaster_service.user.repository.UserInfoRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class LoggedInUserUtil {
 
     private final UserInfoRepository userInfoRepository;
-    private final CollegeRepository collegeRepository;
 
-    public UserEntity getLoggedInUser() {
+    public UserInfoEntity getLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = getUsername(authentication);
@@ -39,11 +36,5 @@ public class LoggedInUserUtil {
             default -> throw new IllegalStateException("Authentication principal is not of expected type: " + principal.getClass());
         }
         return username;
-    }
-
-    public College getLoggedInCollege() {
-        UserEntity user = getLoggedInUser();
-        return collegeRepository.findByCollegeUsersContaining(user)
-                .orElseThrow(() -> new EntityNotFoundException("No college found for user: " + user.getEmailId()));
     }
 }

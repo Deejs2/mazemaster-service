@@ -1,6 +1,6 @@
-package com.nepal.collegehub.user.role.repository;
+package com.game.mazemaster_service.user.role.repository;
 
-import com.nepal.collegehub.user.role.entity.Roles;
+import com.game.mazemaster_service.user.role.entity.Roles;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

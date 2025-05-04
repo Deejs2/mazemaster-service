@@ -1,10 +1,13 @@
 package com.game.mazemaster_service.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.game.mazemaster_service.user.role.dto.RolesResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -21,7 +24,7 @@ public class AuthResponse {
     @JsonProperty("token_type")
     private TokenType tokenType;
 
-    @JsonProperty("user_name")
-    private String userName;
+    @JsonProperty("user_role")
+    private List<RolesResponse> userRole;
 
 }

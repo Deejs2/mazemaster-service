@@ -1,4 +1,4 @@
-package com.nepal.collegehub.security;
+package com.game.mazemaster_service.security;
 
 import lombok.Getter;
 
@@ -7,14 +7,11 @@ public enum WHITE_LIST_URLS {
     SIGN_IN("/api/v1/auth/sign-in"),
     FORGOT_PASSWORD("/api/v1/auth/forgot-password"),
     RESET_PASSWORD("/api/v1/auth/reset-password"),
-    COLLEGE_REQUEST("/api/v1/college/request"),
-    COLLEGE_VALIDATE("/api/v1/college/validate"),
-    COLLEGE_LEVEL("/api/v1/college/level"),
-    COURSE_DISCIPLINE("/api/v1/course/disciplines"),
-    GET_ALL_LOCATIONS("/api/v1/location/province"),
-    GET_BOARD_TYPES("/api/v1/board/types"),
-    GET_SOCIAL_MEDIA_TYPES("/api/v1/socials"),
+    MAZE("/api/v1/maze/**"),
     V1_ALL("/v1/**"),
+
+    HOME("/"),
+
     FILES("/files/**");
 
     private final String url;

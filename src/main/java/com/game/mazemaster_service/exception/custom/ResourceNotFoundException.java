@@ -1,4 +1,4 @@
-package com.nepal.collegehub.exceptions.custom;
+package com.game.mazemaster_service.exception.custom;
 
 import lombok.Getter;
 

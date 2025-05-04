@@ -1,4 +1,4 @@
-package com.game.mazemaster_service.user.dto.request;
+package com.game.mazemaster_service.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

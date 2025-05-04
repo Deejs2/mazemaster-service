@@ -1,4 +1,4 @@
-package com.nepal.collegehub.auth.dto.request;
+package com.game.mazemaster_service.auth.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 

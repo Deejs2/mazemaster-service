@@ -1,17 +1,8 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:3/15/2025
- * Time:6:47 AM
- */
+package com.game.mazemaster_service.user.role.entity;
 
-package com.nepal.collegehub.user.role.entity;
-
-import com.nepal.collegehub.common.Auditable;
+import com.game.mazemaster_service.config.auditing.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.stream.DoubleStream;
 
 @Data
 @NoArgsConstructor

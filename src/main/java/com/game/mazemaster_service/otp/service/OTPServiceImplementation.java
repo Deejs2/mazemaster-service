@@ -1,17 +1,10 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:2/24/2025
- * Time:4:39 PM
- */
+package com.game.mazemaster_service.otp.service;
 
-package com.nepal.collegehub.otp.service;
-
-import com.nepal.collegehub.otp.entity.OTP;
-import com.nepal.collegehub.otp.entity.OTPPurpose;
-import com.nepal.collegehub.otp.repository.OTPRepository;
-import com.nepal.collegehub.user.entity.UserEntity;
-import com.nepal.collegehub.utils.otp.OtpUtil;
+import com.game.mazemaster_service.otp.entity.OTP;
+import com.game.mazemaster_service.otp.entity.OTPPurpose;
+import com.game.mazemaster_service.otp.repository.OTPRepository;
+import com.game.mazemaster_service.otp.utils.OtpUtil;
+import com.game.mazemaster_service.user.entity.UserInfoEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +24,7 @@ public class OTPServiceImplementation implements OTPService {
     private long expiryTime;
 
     @Override
-    public OTP saveOTP(UserEntity user, OTPPurpose purpose) {
+    public OTP saveOTP(UserInfoEntity user, OTPPurpose purpose) {
         OTP otp = OTP.builder()
                 .user(user)
                 .otpValue(otpUtil.generateOtp(user.getEmailId()))
@@ -42,7 +35,7 @@ public class OTPServiceImplementation implements OTPService {
     }
 
     @Override
-    public void validateOTP(UserEntity user, String otp) {
+    public void validateOTP(UserInfoEntity user, String otp) {
         OTP otpEntity = otpRepository.findByUserAndOtpValue(user, otp)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid OTP"));
         if (otpEntity.getExpiryTime().isBefore(LocalDateTime.now())) {

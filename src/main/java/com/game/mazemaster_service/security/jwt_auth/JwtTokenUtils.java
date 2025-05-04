@@ -2,33 +2,33 @@ package com.game.mazemaster_service.security.jwt_auth;
 
 import com.game.mazemaster_service.user.config.UserInfoConfig;
 import com.game.mazemaster_service.user.repository.UserInfoRepository;
+import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.Objects;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtils {
 
-    public String getUserName(Jwt jwtToken){
-        return jwtToken.getSubject();
+    public String getUserName(JWTClaimsSet claims) {
+        return claims.getSubject();
     }
 
-    public boolean isTokenValid(Jwt jwtToken, UserDetails userDetails){
-        final String userName = getUserName(jwtToken);
-        boolean isTokenExpired = getIfTokenIsExpired(jwtToken);
+    public boolean isTokenValid(JWTClaimsSet claims, UserDetails userDetails) {
+        final String userName = getUserName(claims);
+        boolean isTokenExpired = getIfTokenIsExpired(claims);
         boolean isTokenUserSameAsDatabase = userName.equals(userDetails.getUsername());
-        return !isTokenExpired  && isTokenUserSameAsDatabase;
-
+        return !isTokenExpired && isTokenUserSameAsDatabase;
     }
 
-    private boolean getIfTokenIsExpired(Jwt jwtToken) {
-        return Objects.requireNonNull(jwtToken.getExpiresAt()).isBefore(Instant.now());
+    private boolean getIfTokenIsExpired(JWTClaimsSet claims) {
+        Date expiration = claims.getExpirationTime();
+        return expiration != null && expiration.before(Date.from(Instant.now()));
     }
 
     private final UserInfoRepository userInfoRepository;

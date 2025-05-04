@@ -1,9 +1,13 @@
 package com.game.mazemaster_service.user.entity;
 
+import com.game.mazemaster_service.auth.entity.RefreshTokenEntity;
+import com.game.mazemaster_service.user.role.entity.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +20,7 @@ public class UserInfoEntity {
     private Long id;
 
     @Column(name = "USER_NAME")
-    private String userName;
+    private String fullName;
 
     @Column(nullable = false, name = "EMAIL_ID", unique = true)
     private String emailId;
@@ -27,7 +31,15 @@ public class UserInfoEntity {
     @Column(name = "MOBILE_NUMBER")
     private String mobileNumber;
 
-    @Column(nullable = false, name = "ROLES")
-    private String roles;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Roles> roles;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RefreshTokenEntity> refreshTokens;
+
+    @Column(nullable = false, name = "IS_VERIFIED")
+    private boolean isVerified = false;
+
+    @Column(nullable = false, name = "IS_ACTIVE")
+    private boolean isActive = true;
 }

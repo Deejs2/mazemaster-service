@@ -1,10 +1,10 @@
-package com.nepal.collegehub.user.role.entity;
+package com.game.mazemaster_service.user.role.entity;
 
 import lombok.Getter;
 
 @Getter
 public enum UserRole {
-    SUPER_ADMIN,
-    COLLEGE_ADMIN,
-    COLLEGE_USER;
+    ROLE_ADMINISTRATOR,
+    ROLE_PLAYER,
+    ROLE_GUEST
 }

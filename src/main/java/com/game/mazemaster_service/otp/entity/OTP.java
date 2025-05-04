@@ -1,13 +1,5 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:2/24/2025
- * Time:4:36 PM
- */
-
-package com.nepal.collegehub.otp.entity;
-
-import com.nepal.collegehub.user.entity.UserEntity;
+package com.game.mazemaster_service.otp.entity;
+import com.game.mazemaster_service.user.entity.UserInfoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +20,7 @@ public class OTP {
     private Long id;
 
     @ManyToOne
-    private UserEntity user;
+    private UserInfoEntity user;
 
     @Column(unique = true, nullable = false)
     private String otpValue;

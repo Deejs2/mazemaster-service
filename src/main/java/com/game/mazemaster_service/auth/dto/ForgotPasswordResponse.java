@@ -1,11 +1,4 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:3/4/2025
- * Time:12:46 PM
- */
-
-package com.nepal.collegehub.auth.dto.response;
+package com.game.mazemaster_service.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

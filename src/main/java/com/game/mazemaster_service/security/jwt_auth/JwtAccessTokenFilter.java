@@ -1,7 +1,11 @@
 package com.game.mazemaster_service.security.jwt_auth;
 
-import com.game.mazemaster_service.auth.dto.TokenType;
 import com.game.mazemaster_service.config.RSAKeyRecord;
+import com.game.mazemaster_service.security.WHITE_LIST_URLS;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jwt.JWTClaimsSet;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,15 +19,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtValidationException;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Enumeration;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -31,53 +34,77 @@ public class JwtAccessTokenFilter extends OncePerRequestFilter {
 
     private final RSAKeyRecord rsaKeyRecord;
     private final JwtTokenUtils jwtTokenUtils;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        logRequestDetails(request);
 
-        try{
-            log.info("[JwtAccessTokenFilter:doFilterInternal] :: Started ");
+        String requestURI = request.getRequestURI();
+        if (isWhitelisted(requestURI)) {
+            log.info("Skipping JWT filter for: {}", requestURI);
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            log.info("[JwtAccessTokenFilter:doFilterInternal]Filtering the Http Request:{}",request.getRequestURI());
+        log.info("[JwtAccessTokenFilter] Filtering request: {}", requestURI);
 
-            final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.error("[JwtAccessTokenFilter] Invalid or missing Authorization header");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            JwtDecoder jwtDecoder =  NimbusJwtDecoder.withPublicKey(rsaKeyRecord.rsaPublicKey()).build();
+        final String token = authHeader.substring(7);
 
-            if(!authHeader.startsWith(TokenType.Bearer.name())){
-                filterChain.doFilter(request,response);
-                return;
-            }
+        try {
+            // Decrypt the JWE
+            JWEObject jweObject = JWEObject.parse(token);
+            RSADecrypter decrypter = new RSADecrypter(rsaKeyRecord.rsaPrivateKey());
+            jweObject.decrypt(decrypter);
 
-            final String token = authHeader.substring(7);
-            final Jwt jwtToken = jwtDecoder.decode(token);
+            // Get claims from decrypted payload
+            JWTClaimsSet claims = JWTClaimsSet.parse(jweObject.getPayload().toJSONObject());
 
-
-            final String userName = jwtTokenUtils.getUserName(jwtToken);
-
-            if(!userName.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null){
-
+            // Validate and authenticate
+            final String userName = jwtTokenUtils.getUserName(claims);
+            if (!userName.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = jwtTokenUtils.userDetails(userName);
-                if(jwtTokenUtils.isTokenValid(jwtToken,userDetails)){
+                if (jwtTokenUtils.isTokenValid(claims, userDetails)) {
                     SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-
-                    UsernamePasswordAuthenticationToken createdToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
+                    UsernamePasswordAuthenticationToken createdToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     createdToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     securityContext.setAuthentication(createdToken);
                     SecurityContextHolder.setContext(securityContext);
                 }
             }
-            log.info("[JwtAccessTokenFilter:doFilterInternal] Completed");
+        } catch (ParseException | JOSEException e) {
+            log.error("[JwtAccessTokenFilter] Error processing token: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token: " + e.getMessage());
+        }
 
-            filterChain.doFilter(request,response);
-        }catch (JwtValidationException jwtValidationException){
-            log.error("[JwtAccessTokenFilter:doFilterInternal] Exception due to :{}",jwtValidationException.getMessage());
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,jwtValidationException.getMessage());
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean isWhitelisted(String requestURI) {
+        return Arrays.stream(WHITE_LIST_URLS.values())
+                .map(WHITE_LIST_URLS::getUrl)
+                .anyMatch(url -> requestURI.matches(url.replace("**", ".*")));
+    }
+
+
+    private void logRequestDetails(HttpServletRequest request) {
+        log.info("Request URI: {}", request.getRequestURI());
+        log.info("HTTP Method: {}", request.getMethod());
+        log.info("Headers:");
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            log.info("{}: {}", headerName, headerValue);
         }
     }
 }

@@ -1,11 +1,4 @@
-/**
- * Author: Utsab Dahal
- * User:LEGION
- * Date:3/6/2025
- * Time:12:54 PM
- */
-
-package com.nepal.collegehub.common;
+package com.game.mazemaster_service.config.auditing;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
