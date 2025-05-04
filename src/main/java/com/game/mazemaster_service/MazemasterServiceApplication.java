@@ -26,7 +26,7 @@ public class MazemasterServiceApplication extends SpringBootServletInitializer {
 
 	@GetMapping("/")
 	public String home() {
-		return "Welcome to the MazeMaster Service!";
+		return "Welcome to the MazeMaster Service! CI/CD Implemented!";
 	}
 
 }
