@@ -4,9 +4,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 public record UserRegistrationRequest(
-        String fullName,
+        @NotEmpty(message = "Username must not be empty")
+        String username,
 
-        @NotEmpty(message = "User email must not be empty") // Neither null nor 0 size
-        @Email(message = "Invalid email format")
-        String userEmail
+        @Email(message = "Email must be valid")
+        @NotEmpty(message = "Email must not be empty")
+        String email,
+
+        @NotEmpty(message = "Password must not be empty")
+        String password
 ) { }

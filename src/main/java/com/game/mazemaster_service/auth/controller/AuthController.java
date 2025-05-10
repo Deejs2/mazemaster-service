@@ -8,6 +8,9 @@ import com.game.mazemaster_service.auth.message.AuthResponseMessages;
 import com.game.mazemaster_service.auth.service.AuthService;
 import com.game.mazemaster_service.global.BaseController;
 import com.game.mazemaster_service.global.dto.ApiResponse;
+import com.game.mazemaster_service.user.dto.UserRegistrationRequest;
+import com.game.mazemaster_service.user.dto.UserRegistrationResponse;
+import com.game.mazemaster_service.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController extends BaseController {
     private final AuthService authService;
+    private final UserService userService;
     @Operation(
             summary = "User login",
             description = "Authenticates a user using email and password, then returns JWT access and refresh tokens."
@@ -33,19 +37,6 @@ public class AuthController extends BaseController {
         log.info("[AuthController:authenticateUser] User: {} is trying to authenticate", authentication.email());
         return successResponse(authService.getJwtTokensAfterAuthentication(authentication, response),
                 AuthResponseMessages.USER_AUTHENTICATED);
-    }
-
-    @Operation(
-            summary = "Refresh JWT access token",
-            description = "Generates a new access token using a valid refresh token."
-    )
-    @PostMapping("/refresh-token")
-    public ResponseEntity<ApiResponse<AuthResponse>> getAccessToken(
-            @CookieValue(name = "refresh_token", required = false)
-            @Parameter(description = "Refresh token stored in cookies") String refreshToken) {
-
-        return successResponse(authService.getAccessTokenUsingRefreshToken(refreshToken),
-                AuthResponseMessages.ACCESS_TOKEN_REFRESHED);
     }
 
     @Operation(
@@ -71,5 +62,17 @@ public class AuthController extends BaseController {
 
         return successResponse(authService.resetPassword(resetPasswordRequest),
                 AuthResponseMessages.PASSWORD_RESET_SUCCESSFULLY);
+    }
+
+    @Operation(
+            summary = "Register User",
+            description = "Registers a new user with the provided details."
+    )
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<UserRegistrationResponse>> registerUser(
+            @RequestBody UserRegistrationRequest registrationRequest) {
+
+        return successResponse(userService.addUser(registrationRequest),
+                AuthResponseMessages.USER_REGISTERED_SUCCESSFULLY);
     }
 }

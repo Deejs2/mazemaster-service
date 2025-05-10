@@ -6,5 +6,6 @@ public class UserExceptionMessages {
     public static final String INVALID_PASSWORD = "Password is not valid";
     public static final String INCORRECT_OLD_PASSWORD = "Old password is incorrect";
     public static final String ROLE_NOT_FOUND = "Role not found: ";
+    public static final String USER_ALREADY_EXISTS = "User already exists with this email";
 
 }

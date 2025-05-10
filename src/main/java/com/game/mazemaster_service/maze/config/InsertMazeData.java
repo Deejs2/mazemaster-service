@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
@@ -78,22 +80,96 @@ public class InsertMazeData {
 
     private List<List<Integer>> generateMazeData(int size) {
         List<List<Integer>> maze = new ArrayList<>();
-        double wallProbability = getWallProbability(size);
-
-        // Generate random maze with open borders
         for (int i = 0; i < size; i++) {
             List<Integer> row = new ArrayList<>();
             for (int j = 0; j < size; j++) {
-                if (i == 0 || i == size - 1 || j == 0 || j == size - 1) {
-                    row.add(1); // Border walls
-                } else {
-                    row.add(random.nextDouble() < wallProbability ? 1 : 0);
-                }
+                row.add(1); // Start with all walls
             }
             maze.add(row);
         }
+
+        int[][] positions = generateValidPositions(maze, size);
+        int startX = positions[0][0];
+        int startY = positions[0][1];
+        int endX = positions[1][0];
+        int endY = positions[1][1];
+
+        List<int[]> path = createPathWithBFS(maze, startX, startY, endX, endY);
+        addRandomWalls(maze, size, path);
         return maze;
     }
+
+    private List<int[]> createPathWithBFS(List<List<Integer>> maze, int startX, int startY, int endX, int endY) {
+        int size = maze.size();
+        boolean[][] visited = new boolean[size][size];
+        int[][] parent = new int[size * size][2];
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{startX, startY});
+        visited[startX][startY] = true;
+        parent[startX * size + startY] = new int[]{-1, -1};
+
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int x = current[0];
+            int y = current[1];
+
+            if (x == endX && y == endY) {
+                break;
+            }
+
+            for (int[] dir : directions) {
+                int newX = x + dir[0];
+                int newY = y + dir[1];
+                if (isValidMove(maze, newX, newY, visited)) {
+                    queue.add(new int[]{newX, newY});
+                    visited[newX][newY] = true;
+                    parent[newX * size + newY] = new int[]{x, y};
+                }
+            }
+        }
+
+        // Reconstruct path from end to start
+        List<int[]> path = new LinkedList<>();
+        int[] current = new int[]{endX, endY};
+        while (current[0] != -1) {
+            path.add(0, current);
+            current = parent[current[0] * size + current[1]];
+        }
+
+        // Mark the path in the maze
+        for (int[] cell : path) {
+            maze.get(cell[0]).set(cell[1], 0);
+        }
+
+        return path;
+    }
+
+
+    private boolean isValidMove(List<List<Integer>> maze, int x, int y, boolean[][] visited) {
+        return x >= 0 && y >= 0 && x < maze.size() && y < maze.size() && !visited[x][y];
+    }
+
+    private void addRandomWalls(List<List<Integer>> maze, int size, List<int[]> path) {
+        double wallProbability = getWallProbability(size);
+        boolean[][] isPathCell = new boolean[size][size];
+
+        for (int[] cell : path) {
+            isPathCell[cell[0]][cell[1]] = true;
+        }
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (!isPathCell[i][j] && Math.random() < wallProbability) {
+                    maze.get(i).set(j, 1); // Add wall
+                } else if (!isPathCell[i][j]) {
+                    maze.get(i).set(j, 0); // Ensure open cell if not a path and not wall
+                }
+            }
+        }
+    }
+
 
     private double getWallProbability(int size) {
         return switch ((int) Math.sqrt(size)) {
@@ -108,21 +184,17 @@ public class InsertMazeData {
         int[][] positions = new int[2][2];
 
         // Start position (always in top-left quadrant)
-        do {
-            positions[0][0] = random.nextInt(1, size/2);
-            positions[0][1] = random.nextInt(1, size/2);
-        } while (maze.get(positions[0][0]).get(positions[0][1]) == 1);
+        positions[0][0] = random.nextInt(1, size / 2);
+        positions[0][1] = random.nextInt(1, size / 2);
+        maze.get(positions[0][0]).set(positions[0][1], 0); // Ensure it's open
 
         // End position (always in bottom-right quadrant)
         do {
-            positions[1][0] = random.nextInt(size/2, size - 1);
-            positions[1][1] = random.nextInt(size/2, size - 1);
-        } while (maze.get(positions[1][0]).get(positions[1][1]) == 1 ||
-                (positions[1][0] == positions[0][0] && positions[1][1] == positions[0][1]));
+            positions[1][0] = random.nextInt(size / 2, size - 1);
+            positions[1][1] = random.nextInt(size / 2, size - 1);
+        } while (positions[1][0] == positions[0][0] && positions[1][1] == positions[0][1]);
 
-        // Ensure positions are open
-        maze.get(positions[0][0]).set(positions[0][1], 0);
-        maze.get(positions[1][0]).set(positions[1][1], 0);
+        maze.get(positions[1][0]).set(positions[1][1], 0); // Ensure it's open
 
         return positions;
     }

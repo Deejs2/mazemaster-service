@@ -22,8 +22,8 @@ public class UserController extends BaseController {
     private static final String USER = "User";
     private final UserService userService;
     @PostMapping()
-    public ResponseEntity<ApiResponse<Void>> addUser(@RequestBody UserRegistrationRequest userRequest){
-        return successResponse(ResponseMessageUtil.createdSuccessfully(USER));
+    public ResponseEntity<ApiResponse<UserRegistrationResponse>> addUser(@RequestBody UserRegistrationRequest userRegistrationRequest){
+        return successResponse(userService.addUser(userRegistrationRequest), ResponseMessageUtil.createdSuccessfully(USER));
     }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserRegistrationResponse>> getUserById(@PathVariable Long id){

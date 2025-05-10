@@ -7,4 +7,5 @@ public class AuthExceptionMessages {
     public static final String REFRESH_TOKEN_MISSING = "Refresh token is missing";
     public static final String REFRESH_TOKEN_REVOKED = "Refresh token revoked";
     public static final String TRY_AGAIN = "Please Try Again";
+    public static final String USER_ALREADY_REGISTERED = "User already registered with email: ";
 }

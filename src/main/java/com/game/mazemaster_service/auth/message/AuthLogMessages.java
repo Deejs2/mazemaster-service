@@ -6,5 +6,5 @@ public class AuthLogMessages {
     public static final String INVALID_CREDENTIALS = "[AuthService:userSignInAuth] Invalid credentials for user: {}";
     public static final String ACCESS_TOKEN_GENERATED = "[AuthService:userSignInAuth] Access token for user:{}, has been generated";
     public static final String EXCEPTION_AUTHENTICATING = "[AuthService:userSignInAuth] Exception while authenticating the user due to : {}";
-
+    public static final String USER_ALREADY_REGISTERED = "[AuthService:userSignInAuth] User with email :{} already registered";
 }

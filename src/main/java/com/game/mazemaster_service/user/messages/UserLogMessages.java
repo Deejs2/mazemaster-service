@@ -8,4 +8,6 @@ public class UserLogMessages {
     public static final String USER_REGISTERED = "User: {} registered successfully";
     public static final String USER_UPDATED = "User: {} updated successfully";
     public static final String PASSWORD_CHANGED = "Password for user: {} changed successfully";
+    public static final String USER_REGISTERED_SUCCESSFULLY = "User registered successfully";
+    public static final String OTP_SENT = "OTP sent to email: {}";
 }

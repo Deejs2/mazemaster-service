@@ -33,7 +33,7 @@ public class JwtTokenGenerator {
             String roles = getRolesOfUser(authentication);
             String permissions = getPermissionsFromRoles(roles);
             JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                    .issuer("CollegeHub")
+                    .issuer("MazeMaster")
                     .issueTime(Date.from(Instant.now()))
                     .expirationTime(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
                     .subject(authentication.getName())
@@ -54,35 +54,6 @@ public class JwtTokenGenerator {
         } catch (JOSEException e) {
             log.error("[JwtTokenGenerator:generateAccessToken] Error generating token: {}", e.getMessage());
             throw new RuntimeException("Failed to generate access token", e);
-        }
-    }
-
-    public String generateRefreshToken(Authentication authentication) {
-        try {
-            log.info("[JwtTokenGenerator:generateRefreshToken] Token Creation Started for: {}", authentication.getName());
-
-            JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                    .issuer("CollegeHub")
-                    .issueTime(Date.from(Instant.now()))
-                    .expirationTime(Date.from(Instant.now().plus(15, ChronoUnit.DAYS)))
-                    .subject(authentication.getName())
-                    .claim("scope", "REFRESH_TOKEN")
-                    .build();
-
-            JWEObject jweObject = new JWEObject(
-                    new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A256GCM),
-                    new Payload(claims.toJSONObject())
-            );
-
-            RSAEncrypter encrypter = new RSAEncrypter(rsaKeyRecord.rsaPublicKey());
-            jweObject.encrypt(encrypter);
-
-            String token = jweObject.serialize();
-            log.info("[JwtTokenGenerator:generateRefreshToken] Generated encrypted refresh token for: {}", authentication.getName());
-            return token;
-        } catch (JOSEException e) {
-            log.error("[JwtTokenGenerator:generateRefreshToken] Error generating token: {}", e.getMessage());
-            throw new RuntimeException("Failed to generate refresh token", e);
         }
     }
 

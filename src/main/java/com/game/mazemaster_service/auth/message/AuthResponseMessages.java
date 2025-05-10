@@ -10,4 +10,5 @@ public class AuthResponseMessages {
     public static final String PASSWORD_RESET_LINK_SENT = "Password reset link sent";
     public static final String PASSWORD_RESET_SUCCESSFULLY = "Password reset successfully";
     public static final String PASSWORD_RESET_SUCCESS = "Password reset successfully";
+    public static final String USER_REGISTERED_SUCCESSFULLY = "User registered successfully";
 }
