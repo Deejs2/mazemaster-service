@@ -2,13 +2,11 @@ package com.game.mazemaster_service.user_progress.entity;
 
 import com.game.mazemaster_service.config.auditing.Auditable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
@@ -40,11 +38,18 @@ public class UserProgress extends Auditable {
     @Column(nullable=false)
     private Instant lastAttempt;
 
-    @Column(nullable=false, updatable=false)
-    private Instant createdAt = Instant.now();
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
 
-    @Column(nullable=false)
-    private Instant updatedAt = Instant.now();
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
 
     @PreUpdate
     public void preUpdate() {

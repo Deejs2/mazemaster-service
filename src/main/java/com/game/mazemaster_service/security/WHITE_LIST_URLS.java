@@ -11,6 +11,9 @@ public enum WHITE_LIST_URLS {
     MAZE("/api/v1/maze"),
     MAZE_LEVEL("/api/v1/maze/level"),
     V1_ALL("/v1/**"),
+    VALIDATE_OTP("/api/v1/otp/**"),
+    LEADERBOARD("/api/v1/leaderboard/**"),
+    GET_USER_BY_ID("/api/v1/user/**"),
 
     HOME("/"),
 

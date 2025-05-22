@@ -1,6 +1,10 @@
 package com.game.mazemaster_service.user_progress.service;
 
 import com.game.mazemaster_service.global.logged_in_user.LoggedInUserUtil;
+import com.game.mazemaster_service.maze.entity.LevelCategory;
+import com.game.mazemaster_service.maze.entity.Maze;
+import com.game.mazemaster_service.maze.repository.MazeRepository;
+import com.game.mazemaster_service.user_progress.dto.HighestLevelResponse;
 import com.game.mazemaster_service.user_progress.dto.UserProgressRequest;
 import com.game.mazemaster_service.user_progress.dto.UserProgressResponse;
 import com.game.mazemaster_service.user_progress.entity.UserProgress;
@@ -18,6 +22,7 @@ import java.util.List;
 public class UserProgressServiceImpl implements UserProgressService{
     private final UserProgressRepository userProgressRepository;
     private final LoggedInUserUtil loggedInUserUtil;
+    private final MazeRepository mazeRepository;
     @Override
     public UserProgressResponse saveUserProgress(UserProgressRequest userProgressRequest) {
         log.info("Saving user progress for user: {}, maze: {}",
@@ -98,5 +103,30 @@ public class UserProgressServiceImpl implements UserProgressService{
         userProgressRepository.delete(userProgress);
         log.info("Deleted user progress for user: {}, maze: {}",
                 loggedInUserUtil.getLoggedInUser(), mazeId);
+    }
+
+    @Override
+    public HighestLevelResponse getHighestLevelByCategory(LevelCategory category) {
+        log.info("Getting highest level for category: {}",
+                loggedInUserUtil.getLoggedInUser());
+        var userId = loggedInUserUtil.getLoggedInUser().getId();
+
+        // Fetch all user progress for the logged-in user
+        var userProgressList = userProgressRepository.findAllByUserId(userId);
+
+        // Filter progress entries by the given category
+        var mazeIds = userProgressList.stream()
+                .map(UserProgress::getMazeId)
+                .toList();
+
+        // Fetch all mazes for the given maze IDs and filter by category
+        var highestLevel = mazeRepository.findAllById(mazeIds).stream()
+                .filter(maze -> maze.getLevelCategory() == category)
+                .mapToInt(Maze::getLevelNumber)
+                .max()
+                .orElse(0); // Default to 0 if no levels are found
+
+        // Return the response
+        return new HighestLevelResponse(category.name(), highestLevel);
     }
 }

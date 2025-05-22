@@ -11,6 +11,8 @@ import com.game.mazemaster_service.global.dto.ApiResponse;
 import com.game.mazemaster_service.user.dto.UserRegistrationRequest;
 import com.game.mazemaster_service.user.dto.UserRegistrationResponse;
 import com.game.mazemaster_service.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

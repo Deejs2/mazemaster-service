@@ -40,7 +40,7 @@ public class UserServiceImplementation implements UserService {
     public UserRegistrationResponse addUser(UserRegistrationRequest userRegistrationRequest) {
         log.info(UserLogMessages.USER_REGISTERED, userRegistrationRequest.email());
 
-        if (userInfoRepository.existsByEmailId(userRegistrationRequest.email())) {
+        if (Boolean.TRUE.equals(userInfoRepository.existsByEmailId(userRegistrationRequest.email()))) {
             throw new IllegalArgumentException(UserExceptionMessages.USER_ALREADY_EXISTS + userRegistrationRequest.email());
         }
 

@@ -2,6 +2,8 @@ package com.game.mazemaster_service.user_progress.controller;
 
 import com.game.mazemaster_service.global.BaseController;
 import com.game.mazemaster_service.global.dto.ApiResponse;
+import com.game.mazemaster_service.maze.entity.LevelCategory;
+import com.game.mazemaster_service.user_progress.dto.HighestLevelResponse;
 import com.game.mazemaster_service.user_progress.dto.UserProgressRequest;
 import com.game.mazemaster_service.user_progress.dto.UserProgressResponse;
 import com.game.mazemaster_service.user_progress.message.UserProgressMessage;
@@ -42,5 +44,10 @@ public class UserProgressController extends BaseController {
     public ResponseEntity<ApiResponse<Void>> deleteUserProgress(@PathVariable Long userId, @PathVariable Long mazeId) {
         userProgressService.deleteUserProgress(userId, mazeId);
         return successResponse(null, UserProgressMessage.USER_PROGRESS_DELETED);
+    }
+
+    @GetMapping("/highest-level")
+    public ResponseEntity<ApiResponse<HighestLevelResponse>> getHighestLevelByCategory(@RequestParam (defaultValue = "EASY") LevelCategory category) {
+        return successResponse(userProgressService.getHighestLevelByCategory(category), UserProgressMessage.HIGHEST_LEVEL_FETCHED);
     }
 }

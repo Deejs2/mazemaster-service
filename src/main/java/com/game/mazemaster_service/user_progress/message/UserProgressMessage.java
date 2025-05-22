@@ -7,4 +7,6 @@ public class UserProgressMessage {
     public static final String USER_PROGRESS_DELETED = "User progress deleted successfully.";
     public static final String USER_PROGRESS_UPDATED = "User progress updated successfully.";
     public static final String USER_PROGRESS_FETCHED = "User progress fetched successfully.";
+
+    public static final String HIGHEST_LEVEL_FETCHED = "Highest level fetched successfully.";
 }

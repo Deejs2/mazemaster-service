@@ -1,5 +1,7 @@
 package com.game.mazemaster_service.user_progress.service;
 
+import com.game.mazemaster_service.maze.entity.LevelCategory;
+import com.game.mazemaster_service.user_progress.dto.HighestLevelResponse;
 import com.game.mazemaster_service.user_progress.dto.UserProgressRequest;
 import com.game.mazemaster_service.user_progress.dto.UserProgressResponse;
 
@@ -15,4 +17,5 @@ public interface UserProgressService {
     List<UserProgressResponse> getAllUserProgressByUserId(Long userId);
 
     void deleteUserProgress(Long userId, Long mazeId);
+    HighestLevelResponse getHighestLevelByCategory(LevelCategory category);
 }
