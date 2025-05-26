@@ -34,7 +34,9 @@ public interface UserProgressRepository extends JpaRepository<UserProgress, Long
     SELECT COUNT(*) + 1 
     FROM UserProgress u 
     WHERE u.bestScore > (
-        SELECT up.bestScore FROM UserProgress up WHERE up.userId = :userId
+        SELECT MAX(up.bestScore) 
+        FROM UserProgress up 
+        WHERE up.userId = :userId
     )
 """)
     Integer getUserRank(@Param("userId") Long userId);
