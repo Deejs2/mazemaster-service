@@ -10,13 +10,13 @@ public class LeaderboardResponse {
     private Long userId;
     private int totalScore;
     private int totalTime;
-    private int levelsCompleted;
+    private MazeResponse levelsCompleted;
 
-    public LeaderboardResponse(UserProgress userProgress) {
+    public LeaderboardResponse(UserProgress userProgress, MazeResponse mazeResponse) {
         this.userId = userProgress.getUserId();
         this.totalScore = userProgress.getBestScore();
         this.totalTime = userProgress.getCompletionTime();
-        this.levelsCompleted = userProgress.getAttempts();
+        this.levelsCompleted = mazeResponse;
     }
 
 

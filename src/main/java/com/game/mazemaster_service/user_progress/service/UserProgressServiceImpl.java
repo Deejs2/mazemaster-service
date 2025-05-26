@@ -4,6 +4,8 @@ import com.game.mazemaster_service.global.logged_in_user.LoggedInUserUtil;
 import com.game.mazemaster_service.maze.entity.LevelCategory;
 import com.game.mazemaster_service.maze.entity.Maze;
 import com.game.mazemaster_service.maze.repository.MazeRepository;
+import com.game.mazemaster_service.user.entity.UserInfoEntity;
+import com.game.mazemaster_service.user.repository.UserInfoRepository;
 import com.game.mazemaster_service.user_progress.dto.HighestLevelResponse;
 import com.game.mazemaster_service.user_progress.dto.UserProgressRequest;
 import com.game.mazemaster_service.user_progress.dto.UserProgressResponse;
@@ -22,6 +24,7 @@ import java.util.List;
 public class UserProgressServiceImpl implements UserProgressService{
     private final UserProgressRepository userProgressRepository;
     private final LoggedInUserUtil loggedInUserUtil;
+    private final UserInfoRepository userInfoRepository;
     private final MazeRepository mazeRepository;
     @Override
     public UserProgressResponse saveUserProgress(UserProgressRequest userProgressRequest) {
@@ -85,9 +88,12 @@ public class UserProgressServiceImpl implements UserProgressService{
 
     @Override
     public List<UserProgressResponse> getAllUserProgressByUserId(Long userId) {
-        log.info("Getting all user progress for user: {}",
-                loggedInUserUtil.getLoggedInUser());
-        return userProgressRepository.findAllByUserId(userId).stream()
+        log.info("Getting all user progress for user: {}", userId);
+        UserInfoEntity userInfoEntity = userInfoRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        List<UserProgress> userProgressList = userProgressRepository.findAllByUserId(userInfoEntity.getId());
+        return userProgressList.stream()
                 .map(UserProgressResponse::new)
                 .toList();
     }
